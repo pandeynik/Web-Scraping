@@ -1,0 +1,72 @@
+web scraping using R 
+fetching details of all time classic movies from website Rotten tomatoes
+
+
+#Loading the rvest package
+library('rvest')
+
+
+#Specifying the url for desired website to be scrapped
+url_1 <- 'https://www.rottentomatoes.com/top/bestofrt/top_100_classics_movies/'
+
+
+#Reading the HTML code from the website
+webpage_1 <- read_html(url_1)
+
+
+
+#Using CSS selectors to scrap the rankings section
+rank_data_html_1 <- html_nodes(webpage_1,'.table .bold')
+
+#Converting the ranking data to text
+rank_data_1 <- html_text(rank_data_html_1)
+
+#Let's have a look at the rankings
+head(rank_data_1)
+length(rank_data_1) ##100
+#Data-Preprocessing: Converting rankings to numerical
+rank_data_1<-as.numeric(rank_data_1)
+
+#Let's have another look at the rankings
+head(rank_data_1)
+
+#Using CSS selectors to scrap the title section
+title_data_html_1 <- html_nodes(webpage_1,'#top_movies_main .articleLink')
+
+#Converting the title data to text
+title_data_1 <- html_text(title_data_html_1)
+
+#Data-Preprocessing: removing '\n'
+title_data_1<-gsub("\n","",title_data_1)
+
+#Let's have a look at the title
+head(title_data_1)
+length(title_data_1) ##100
+fix(title_data_1)
+
+
+##Using CSS selectors to scrap the tamatometere
+tamatometer_score<- html_nodes(webpage_1,'#top_movies_main .tMeterScore')
+#Converting the tamatometer data to text
+tamatometere_data<- html_text(tamatometer_score)
+#Let's have a look at the tamatometer 
+head(tamatometere_data)
+length(tamatometere_data) ##100
+fix(tamatometere_data)
+
+
+##Using CSS selectors to scrap the No. of review
+no_of_review<- html_nodes(webpage_1,'td.hidden-xs')
+
+##converting the no. of review data into text
+review_data<- html_text(no_of_review)
+
+## let's have a look into the no. of review
+head(review_data)
+length(review_data) ##100
+
+top_classic_movies<- data.frame(rank_data_1,tamatometere_data,title_data_1,review_data)
+fix(top_classic_movies)
+
+
+#------------ Finished ------------------#
